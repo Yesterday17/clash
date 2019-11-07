@@ -5,6 +5,7 @@ import (
 	"net"
 	"strconv"
 
+	"github.com/Dreamacro/clash/config"
 	"github.com/Dreamacro/clash/proxy/http"
 	"github.com/Dreamacro/clash/proxy/redir"
 	"github.com/Dreamacro/clash/proxy/socks"
@@ -43,6 +44,16 @@ func BindAddress() string {
 
 func SetAllowLan(al bool) {
 	allowLan = al
+}
+
+func Tun() config.Tun {
+	if tunAdapter == nil {
+		return config.Tun{}
+	}
+	return config.Tun{
+		Enable:      true,
+		LinuxIfName: tunAdapter.IfName(),
+	}
 }
 
 func SetBindAddress(host string) {

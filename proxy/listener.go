@@ -20,7 +20,7 @@ var (
 	socksUDPListener *socks.SockUDPListener
 	httpListener     *http.HttpListener
 	redirListener    *redir.RedirListener
-	tunAdapter       *tun.TunAdapter
+	tunAdapter       tun.TunAdapter
 )
 
 type listener interface {

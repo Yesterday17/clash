@@ -171,7 +171,7 @@ func (r *Resolver) IsFakeIP() bool {
 }
 
 func (r *Resolver) batchExchange(clients []resolver, m *D.Msg) (msg *D.Msg, err error) {
-	fast, ctx := picker.WithTimeout(context.Background(), time.Second)
+	fast, ctx := picker.WithTimeout(context.Background(), time.Second*10)
 	for _, client := range clients {
 		r := client
 		fast.Go(func() (interface{}, error) {

@@ -2,13 +2,12 @@ package tun
 
 import (
 	"fmt"
-	"net"
-
 	"github.com/google/netstack/tcpip"
 	"github.com/google/netstack/tcpip/buffer"
 	"github.com/google/netstack/tcpip/header"
 	"github.com/google/netstack/tcpip/stack"
 	"github.com/google/netstack/tcpip/transport/udp"
+	"net"
 )
 
 type fakeConn struct {
@@ -29,14 +28,25 @@ func (c *fakeConn) WriteBack(b []byte, addr net.Addr) (n int, err error) {
 		return writeUDP(c.r, data, uint16(c.id.LocalPort), c.id.RemotePort)
 	}
 
-	udpaddr, _ := addr.(*net.UDPAddr)
+	var ip net.IP
+	var port int
+	if udpaddr, ok := addr.(*net.UDPAddr); ok {
+		ip = udpaddr.IP
+		port = udpaddr.Port
+	} else if tcpaddr, ok := addr.(*net.TCPAddr); ok {
+		ip = tcpaddr.IP
+		port = tcpaddr.Port
+	} else {
+		return
+	}
+
 	r := c.r.Clone()
-	if ipv4 := udpaddr.IP.To4(); ipv4 != nil {
+	if ipv4 := ip.To4(); ipv4 != nil {
 		r.LocalAddress = tcpip.Address(ipv4)
 	} else {
-		r.LocalAddress = tcpip.Address(udpaddr.IP)
+		r.LocalAddress = tcpip.Address(ip)
 	}
-	return writeUDP(&r, data, uint16(udpaddr.Port), c.id.RemotePort)
+	return writeUDP(&r, data, uint16(port), c.id.RemotePort)
 }
 
 func (c *fakeConn) LocalAddr() net.Addr {

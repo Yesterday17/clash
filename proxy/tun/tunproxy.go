@@ -40,7 +40,6 @@ type tunAdapter struct {
 
 // NewTunProxy create TunProxy under Linux OS.
 func NewTunProxy(deviceURL string) (TunAdapter, error) {
-
 	var err error
 
 	url, err := url.Parse(deviceURL)
@@ -105,7 +104,6 @@ func NewTunProxy(deviceURL string) (TunAdapter, error) {
 
 	log.Infoln("Tun adapter have interface name: %s", tundev.Name())
 	return tl, nil
-
 }
 
 // Close close the TunAdapter
@@ -123,7 +121,6 @@ func (t *tunAdapter) DeviceURL() string {
 }
 
 func (t *tunAdapter) udpHandlePacket(r *stack.Route, id stack.TransportEndpointID, pkt tcpip.PacketBuffer) bool {
-
 	hdr := header.UDP(pkt.Data.First())
 	if int(hdr.Length()) > pkt.Data.Size() {
 		// Malformed packet.
@@ -164,5 +161,4 @@ func getAddr(id stack.TransportEndpointID) socks5.Addr {
 		addr[1+net.IPv6len], addr[1+net.IPv6len+1] = port[0], port[1]
 		return addr
 	}
-
 }
